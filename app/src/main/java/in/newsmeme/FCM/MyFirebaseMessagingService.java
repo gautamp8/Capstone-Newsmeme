@@ -14,13 +14,12 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import org.bom.india_hackaton.activities.LoginActivity;
-
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
 
+import in.newsmeme.MainActivity;
 import in.newsmeme.R;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -81,6 +80,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 //            Intent intent = new Intent(mContext, MyOpenableActivity.class);
 //            intent.putExtra("key", "value");
+         //
 //            PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 100, intent, PendingIntent.FLAG_ONE_SHOT);
          Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
          NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.mxn.soul.flowingdrawer_core.LeftDrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/id_drawerlayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false">
+
+    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        tools:context="in.newsmeme.MainActivity">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="?attr/actionBarSize"
+                    android:gravity="center">
+
+                    <ImageButton
+                        android:id="@+id/nav_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/transparent"
+                        android:contentDescription="@string/nav_icon"
+                        android:onClick="openDrawer"
+                        android:src="@drawable/nav_menu" />
+
+                    <ImageButton
+                        android:id="@+id/newsmemeIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:layout_marginLeft="-4dp"
+                        android:layout_marginStart="-4dp"
+                        android:layout_toEndOf="@id/nav_icon"
+                        android:layout_toRightOf="@id/nav_icon"
+                        android:background="@android:color/transparent"
+                        android:contentDescription="@string/nav_icon"
+                        android:padding="4dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/nm_white" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_gravity="end"
+                        android:gravity="end"
+                        android:orientation="horizontal">
+
+                        <ImageButton
+                            android:id="@+id/toFirst"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:background="@android:color/transparent"
+                            android:contentDescription="@string/GoToFirst"
+                            android:onClick="toFirstFragment"
+                            android:padding="8dp"
+                            android:src="@drawable/goto_first" />
+
+                        <ImageButton
+                            android:id="@+id/refreshContent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@android:color/transparent"
+                            android:contentDescription="@string/content_refresh"
+                            android:onClick="refreshContent"
+                            android:padding="8dp"
+                            android:src="@drawable/refresh_content" />
+
+                    </LinearLayout>
+                </RelativeLayout>
+            </android.support.v7.widget.Toolbar>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize">
+
+            <include
+                layout="@layout/content_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="bottom|center"
+                android:background="@color/transparent"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/facebookShareButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight=".20"
+                    android:background="@color/facebookShareButton"
+                    android:contentDescription="facebookShareButton"
+                    android:foregroundGravity="center"
+                    android:onClick="shareFacebook"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/facebook_64" />
+
+                <ImageButton
+                    android:id="@+id/facebookMessengerShareButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight=".20"
+                    android:background="@color/facebookMessengerShareButton"
+                    android:contentDescription="facebookMessengerShareButton"
+                    android:foregroundGravity="center"
+                    android:onClick="shareFacebookMessenger"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/facebook_messenger_64" />
+
+                <ImageButton
+                    android:id="@+id/twitterShareButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight=".20"
+                    android:background="@color/twitterShareButton"
+                    android:contentDescription="twitterShareButton"
+                    android:foregroundGravity="center"
+                    android:onClick="shareTwitter"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/twitter_48" />
+
+                <ImageButton
+                    android:id="@+id/whatsappShareButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight=".20"
+                    android:background="@color/whatsappShareButton"
+                    android:contentDescription="whatsappShareButton"
+                    android:foregroundGravity="center"
+                    android:onClick="shareWhatsapp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/whatsapp_48" />
+
+                <ImageButton
+                    android:id="@+id/shareButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight=".20"
+                    android:background="@color/colorPrimary"
+                    android:contentDescription="shareButton"
+                    android:onClick="fabClick"
+                    android:paddingBottom="12dp"
+                    android:paddingTop="14dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/share_48" />
+
+            </LinearLayout>
+        </FrameLayout>
+    </android.support.design.widget.CoordinatorLayout>
+
+    <RelativeLayout
+        android:layout_width="280dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:clipChildren="false">
+
+        <com.mxn.soul.flowingdrawer_core.FlowingView
+            android:id="@+id/sv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="24dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:background="@color/colorPrimaryDark" />
+
+        <FrameLayout
+            android:id="@+id/id_container_menu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="24dp" />
+
+    </RelativeLayout>
+
+</com.mxn.soul.flowingdrawer_core.LeftDrawerLayout>

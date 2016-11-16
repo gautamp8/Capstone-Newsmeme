@@ -1,3 +1,44 @@
 <resources>
-    <string name="app_name">Capstone-Newsmeme</string>
+    <string name="app_name">NewsMeme</string>
+    <string name="action_settings">Settings</string>
+    <string name="YT_API_KEY">AIzaSyC4akYK9TEQUCYJPFcyOA8LK4pc3gigu9k</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nav_icon">navigation_drawer_icon</string>
+    <string name="title_activity_splash">Splash</string>
+    <string name="GoToFirst">GoToFirstFragmentButton</string>
+    <string name="title">Choose news\' languages</string>
+    <string-array name="nav_drawer_enteries">
+        <item>About us</item>
+        <item>BlahBlahBlah</item>
+        <item>Like us on Facebook!</item>
+    </string-array>
+    <string-array name="languages">
+        <item>English</item>
+        <item>Hindi</item>
+    </string-array>
+    <string name="ENGLISH">en</string>
+    <string name="HINDI">hi</string>
+    <string name="FILENAME">lang_preference_file</string>
+    <string name="runCheckFile">run_check_file</string>
+    <string name="checkingRunTimes">1</string>
+    <string name="doneCheckingRunTimes">0</string>
+    <string name="objEN">IRRyWNL7T4</string>
+    <string name="objHI">9Ay184Dxit</string>
+    <string name="storeEnObjFile">store_english_object_file</string>
+    <string name="storeHiObjFile">store_hindi_object_file</string>
+    <string name="content_refresh">for_content_refreshal</string>
+    <string name="emailID">gautam@arseniclabs.com</string>
+    <string name="emailSubject">Android App Feedback</string>
+    <string name="narratorName_By_Text">by</string>
+
+    <string name="FACEBOOK_APP_ID">916899568429260</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="player_error">Error initializing YouTube player</string>
+    <string name="seek_to">Jump To</string>
+    <string name="seek_to_hint">Seconds</string>
+    <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
+    <string name="title_activity_couch_view">CouchViewActivity</string>
+
 </resources>
