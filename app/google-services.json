@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "465504341319",
+    "firebase_url": "https://bargainkart.firebaseio.com",
+    "project_id": "project-8730996435554609561",
+    "storage_bucket": "project-8730996435554609561.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:465504341319:android:a59f1068774565a8",
+        "android_client_info": {
+          "package_name": "in.newsmeme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "465504341319-1oki4q7t44vhkjgaquljag4p6f7eskd9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-lr_1r6EhFNMsGWdi8TeH5dmi1NmpTb0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
