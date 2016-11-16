@@ -65,9 +65,13 @@
             android:name=".CouchViewActivity"
             android:label="@string/title_activity_couch_view"
             android:theme="@style/AppTheme.NoActionBar" />
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="8f35331bac1326a351d14f4e9c81639df220b6c8" />
+
+        <service android:name=".Service.FetchNewsService"/>
+
+
+        <!--<meta-data-->
+            <!--android:name="io.fabric.ApiKey"-->
+            <!--android:value="8f35331bac1326a351d14f4e9c81639df220b6c8" />-->
 
     </application>
 

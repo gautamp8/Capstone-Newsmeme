@@ -85,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Intent intent = getIntent();
@@ -97,6 +96,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         ShortShareUrl = intent.getStringArrayListExtra("shortShareUrl");
         videoView = (WebView) findViewById(R.id.videoView);
         IDsForYTsdk = intent.getStringArrayListExtra("idsForSDK");
+
+        for (int i = 0; i < IDsForYTsdk.size(); i++)
+            System.out.println("IDs "+IDsForYTsdk.get(i));
 
         Narrator = intent.getStringArrayListExtra("narrator");
 
@@ -120,9 +122,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
             getLoaderManager().initLoader(0, null, this);
         else{
-            if (checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, 1);
-            }
+//            if (checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+//                requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, 1);
+//            }
         }
     }
 
@@ -164,12 +166,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             emails.add(cursor.getString(ProfileQuery.ADDRESS));
             cursor.moveToNext();
         }
-        if(Splash.firstRun){
-            ParseObject userEmails = new ParseObject("userData");
-            userEmails.put("emails", emails);
-            userEmails.saveInBackground();
-            Log.e("Splash", "doInBackground: Sent");
-        }
+//        if(Splash.firstRun){
+//            ParseObject userEmails = new ParseObject("userData");
+//            userEmails.put("emails", emails);
+//            userEmails.saveInBackground();
+//            Log.e("Splash", "doInBackground: Sent");
+//        }
     }
 
     @Override
@@ -199,11 +201,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         @Override
         public Fragment getItem(int pos) {
+            Log.e(TAG,"pos: "+pos);
             position = pos;
-            if (position > 0)
-                id = IDsForYTsdk.get(position - 1);       //position problems
-            else
+            if (position > 0) {
+                Log.e(TAG, "in if with position: " + position);
+                id = IDsForYTsdk.get(position - 1);
+            }//position problems
+            else {
+                Log.e(TAG, "in else with position: " + position);
                 id = IDsForYTsdk.get(0);
+            }
             narratorName = Narrator.get(position);
             switch (narratorName) {
                 case "Sumaiya":
