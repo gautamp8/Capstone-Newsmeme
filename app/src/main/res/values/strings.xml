@@ -40,5 +40,20 @@
     <string name="seek_to_hint">Seconds</string>
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
     <string name="title_activity_couch_view">CouchViewActivity</string>
+    <string name="fetch_error">Couldn\'t fetch data</string>
+    <string name="network_error">Preference switching needs network connection</string>
+    <string name="network_suggestion">Please connect to a network</string>
+    <string name="share_app_link" />
+    <string name="youtube_subscribe">https://www.youtube.com/user/Mr9vine</string>
+    <string name="youtube_app_not_found">Please install YouTube app</string>
+    <string name="my_email">gautamprajapati06@gmail.com</string>
+    <string name="gmail_not_found">Gmail client not available</string>
+    <string name="update_pref_dialogue">Updating preferences</string>
+    <string name="pref_connection_suggestion">Preference switching needs network connection</string>
+    <string name="app_not_installed">App not installed</string>
+    <string name="storage_permission">Please provide Storage permission</string>
+    <string name="whatsapp_share_text">"NewsMeme:Video News - the best way to stay updated\nGet today on Play Store https://goo.gl/gNcPbj "</string>
+    <string name="refresh_dialogue">Refreshing</string>
+    <string name="check_out">"Hey! You must check this out!: "</string>
 
 </resources>

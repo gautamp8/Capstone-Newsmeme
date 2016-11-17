@@ -56,6 +56,11 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import in.newsmeme.ContentProvider.News;
+import in.newsmeme.ContentProvider.NewsTitleContentProvider;
+import in.newsmeme.ContentProvider.NewsTitleDBHandler;
+import in.newsmeme.Widget.ListProvider;
+
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final String TAG = "MainActivity";
@@ -87,6 +92,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        NewsTitleDBHandler newsTitleDBHandler = new NewsTitleDBHandler(this);
+
         Intent intent = getIntent();
         Titles = intent.getStringArrayListExtra("titles");
         Descriptions = intent.getStringArrayListExtra("descs");
@@ -100,6 +108,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         for (int i = 0; i < IDsForYTsdk.size(); i++)
             System.out.println("IDs "+IDsForYTsdk.get(i));
 
+        if (Titles!=null){
+            for (int i = 0; i < Titles.size(); i++) {
+                newsTitleDBHandler.addNews(new News(i, Titles.get(i)));
+                Log.e("News Added: ", Titles.get(i));
+            }
+        }
+
         Narrator = intent.getStringArrayListExtra("narrator");
 
         myVib = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
@@ -112,20 +127,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         pager.setPageTransformer(true, new ScaleInOutTransformer());        //Rotate, Scale, Flip
 
         setNavDrawer();
+        getLoaderManager().initLoader(0, null, this);
 
         // FCM
         FirebaseMessaging.getInstance().subscribeToTopic("news");
         Log.e(TAG, "Subscribed to news topic");
         Log.e(TAG, "InstanceID token: " + FirebaseInstanceId.getInstance().getToken());
-
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
-            getLoaderManager().initLoader(0, null, this);
-        else{
-//            if (checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-//                requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, 1);
-//            }
-        }
     }
 
     @Override
@@ -133,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         switch (requestCode) {
             case 1: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    getLoaderManager().initLoader(0, null, this);
+
                 } else {
                     //Toast.makeText(this, "Please provide permissions", Toast.LENGTH_SHORT).show();
                 }
@@ -143,50 +150,29 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle arguments) {
-        return new CursorLoader(this,
-                // Retrieve data rows for the device user's 'profile' contact.
-                Uri.withAppendedPath(
-                        ContactsContract.Profile.CONTENT_URI,
-                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY),
-                ProfileQuery.PROJECTION,
-
-                // Select only email addresses.
-                ContactsContract.Contacts.Data.MIMETYPE + " = ?",
-                new String[]{ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE},
-
-                // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
-                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
+        String[] projection = { NewsTitleDBHandler.KEY_ID, NewsTitleDBHandler.KEY_TITLE};
+        CursorLoader cursorLoader = new CursorLoader(this,
+                NewsTitleContentProvider.CONTENT_URI, projection, null, null, null);
+        return cursorLoader;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
-            cursor.moveToNext();
+        if(cursor.moveToFirst()){
+            do{
+                String data = cursor.getString(cursor.getColumnIndex(NewsTitleDBHandler.KEY_TITLE));
+                Log.e("cursor: ", data);
+                ListProvider.populateListItem(data);
+            } while(cursor.moveToNext());
         }
-//        if(Splash.firstRun){
-//            ParseObject userEmails = new ParseObject("userData");
-//            userEmails.put("emails", emails);
-//            userEmails.saveInBackground();
-//            Log.e("Splash", "doInBackground: Sent");
-//        }
+        cursor.close();
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
+
     }
 
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
-    }
 
     @Override
     protected void onStart() {
@@ -201,14 +187,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         @Override
         public Fragment getItem(int pos) {
-            Log.e(TAG,"pos: "+pos);
             position = pos;
             if (position > 0) {
-                Log.e(TAG, "in if with position: " + position);
                 id = IDsForYTsdk.get(position - 1);
             }//position problems
             else {
-                Log.e(TAG, "in else with position: " + position);
                 id = IDsForYTsdk.get(0);
             }
             narratorName = Narrator.get(position);
@@ -307,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         try {
             myVib.vibrate(50);
             Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.putExtra(Intent.EXTRA_TEXT, "Hey! You must check this out!: " + ShareUrl.get(position));
+            intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.check_out) + ShareUrl.get(position));
             intent.setType("text/*");
             Intent i = Intent.createChooser(intent, "Send via ");
             startActivity(i);
@@ -322,7 +305,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
             progressDialog = new ProgressDialog(MainActivity.this);
-            progressDialog.setMessage("Refreshing");
+            progressDialog.setMessage(getString(R.string.refresh_dialogue));
             progressDialog.show();
 
             try {
@@ -381,14 +364,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         finish();
                     } else {
                         e.printStackTrace();
-                        Toast.makeText(getApplicationContext(), "Couldn't fetch data", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), R.string.fetch_error, Toast.LENGTH_SHORT).show();
                         progressDialog.dismiss();
                     }
                 }
             });
 
         } else {
-            Toast.makeText(this, "Please connect to a network.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.network_suggestion, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -461,12 +444,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 intent.setPackage("com.whatsapp");
                 intent.setAction(Intent.ACTION_SEND);
                 intent.setType("image/*");
-                intent.putExtra(Intent.EXTRA_TEXT, "NewsMeme:Video News - the best way to stay updated\nGet today on Play Store https://goo.gl/gNcPbj ");
+                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.whatsapp_share_text));
                 intent.putExtra(Intent.EXTRA_STREAM, uri);
                 startActivity(intent);
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(MainActivity.this, "App not installed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, R.string.app_not_installed, Toast.LENGTH_SHORT).show();
             }
         } else {
             myVib.vibrate(50);
@@ -476,7 +459,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 intent.setPackage("com.whatsapp");
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(MainActivity.this, "App not installed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, R.string.app_not_installed, Toast.LENGTH_SHORT).show();
             }
             //TODO: APP CAN CRASH HERE
             if (position > 0) {
@@ -492,7 +475,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     e.printStackTrace();
                 }
             }
-            Toast.makeText(this, "Please provide Storage permission", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.storage_permission, Toast.LENGTH_SHORT).show();
             startActivity(intent);
         }
     }
@@ -525,7 +508,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     }
                 }
                 if (!found)
-                    Toast.makeText(MainActivity.this, "App not installed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, R.string.app_not_installed, Toast.LENGTH_SHORT).show();
                 startActivity(share);
             }
         } catch (Exception e) {
@@ -546,7 +529,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         } else {
-            Toast.makeText(this, "Please connect to a network", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.network_suggestion, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -616,7 +599,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 fne.printStackTrace();
             }
             progressDialog = new ProgressDialog(MainActivity.this);
-            progressDialog.setMessage("Updating preferences");
+            progressDialog.setMessage(getResources().getString(R.string.update_pref_dialogue));
             progressDialog.show();
             try {
                 FileInputStream fis = openFileInput(getResources().getString(R.string.FILENAME));
@@ -681,7 +664,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 }
             });
         } else {
-            Toast.makeText(this, "Preference switching needs network connection", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.pref_connection_suggestion, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -697,7 +680,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 fne.printStackTrace();
             }
             progressDialog = new ProgressDialog(MainActivity.this);
-            progressDialog.setMessage("Updating preferences");
+            progressDialog.setMessage(getString(R.string.update_pref_dialogue));
             progressDialog.show();
             try {
                 FileInputStream fis = openFileInput(getResources().getString(R.string.FILENAME));
@@ -755,13 +738,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         finish();
                     } else {
                         e.printStackTrace();
-                        Toast.makeText(getApplicationContext(), "Couldn't fetch data", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), R.string.fetch_error, Toast.LENGTH_SHORT).show();
                         progressDialog.dismiss();
                     }
                 }
             });
         } else {
-            Toast.makeText(this, "Preference switching needs network connection", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.network_error, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -772,7 +755,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             Intent intent = new Intent(this, CouchViewActivity.class);
             startActivity(intent);
         } else {
-            Toast.makeText(this, "Please connect to a network", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.network_suggestion, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -803,7 +786,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     public void shareLinkToApp(View view) {
         Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_TEXT, "Hey, check out NewsMeme android app, Fresh news videos updated daily \uD83D\uDE03\uD83D\uDE03 https://play.google.com/store/apps/details?id=in.newsmeme");
+        intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_app_link));
         intent.setType("text/*");
         Intent i = Intent.createChooser(intent, "Send via ");
         startActivity(i);
@@ -812,10 +795,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void subscribe(View view) {
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse("https://www.youtube.com/user/Mr9vine"));
+            intent.setData(Uri.parse(getString(R.string.youtube_subscribe)));
             startActivity(intent);
         } catch (Exception e) {
-            Toast.makeText(this, "Please install YouTube app", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.youtube_app_not_found, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -825,7 +808,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             intent.setType("text/plain");
             intent.putExtra(Intent.EXTRA_EMAIL, new String[]{getResources().getString(R.string.emailID)});
             intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.emailSubject));
-            intent.putExtra(Intent.EXTRA_BCC, "gautamprajapati06@gmail.com");
+            intent.putExtra(Intent.EXTRA_BCC, getString(R.string.my_email));
             final PackageManager pm = getPackageManager();
             final List<ResolveInfo> matches = pm.queryIntentActivities(intent, 0);
             ResolveInfo best = null;
@@ -836,7 +819,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 intent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
             startActivity(intent);
         } catch (Exception e) {
-            Toast.makeText(this, "Gmail client not available", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.gmail_not_found, Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }
