@@ -88,5 +88,6 @@
     <string name="widget_news_title_description">News Title</string>
     <string name="news_title_list">News Title List</string>
     <string name="empty_widget_text_view">Empty Widget Text View</string>
+    <string name="english_button">English Button</string>
 
 </resources>
