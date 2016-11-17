@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:contentDescription="SplashScreenImageView"
+            android:contentDescription="@string/splashscreenimageview"
             android:scaleType="fitCenter"
             android:src="@drawable/splash1" />
 
@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="NewsMeme"
+            android:text="@string/newsmeme"
             android:textColor="#FFFFFF"
             android:textSize="35dp"
             android:textStyle="bold" />
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="40 sec ★ 800Kb ★ Quality Journalism"
+            android:text="@string/_40_sec_800kb_quality_journalism"
             android:textColor="#FFFFFF"
             android:textSize="19dp"
             android:textStyle="bold" />

@@ -24,7 +24,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="2dp"
                 android:background="@color/colorPrimaryTesing"
-                android:contentDescription="OfflineImageViewImage"
+                android:contentDescription="@string/offlineimageviewimage"
                 android:scaleType="centerInside"
                 android:src="@drawable/splash22" />
 
@@ -60,7 +60,8 @@
                         android:textSize="19dp"
                         android:textStyle="bold"
                         android:maxLines="3"
-                        android:minLines="1" />
+                        android:minLines="1"
+                        android:contentDescription="@string/news_title"/>
 
                     <View
                         android:layout_width="match_parent"
@@ -74,7 +75,8 @@
                         android:layout_margin="10dp"
                         android:minLines="1"
                         android:maxLines="9"
-                        android:textSize="17dp" />
+                        android:textSize="17dp"
+                        android:contentDescription="@string/news_content"/>
 
                 </LinearLayout>
             </ScrollView>

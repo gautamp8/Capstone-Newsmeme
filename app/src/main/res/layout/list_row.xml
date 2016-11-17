@@ -10,7 +10,8 @@
         android:layout_width="57dp"
         android:layout_height="57dp"
         android:layout_alignParentRight="true"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/ic_launcher"
+        android:contentDescription="@string/app_icon"/>
 
     <TextView
         android:id="@+id/heading"
@@ -23,6 +24,7 @@
         android:singleLine="true"
         android:textSize="15sp"
         android:textStyle="bold"
-        android:text="Heading"/>
+        android:text="Heading"
+        android:contentDescription="@string/widget_news_title_description"/>
 
 </LinearLayout>

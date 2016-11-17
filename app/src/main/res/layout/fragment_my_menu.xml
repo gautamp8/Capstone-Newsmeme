@@ -12,7 +12,7 @@
         android:layout_height="200dp"
         android:layout_marginBottom="4dp"
         android:background="@android:color/transparent"
-        android:contentDescription="MenuFragmentImageView"
+        android:contentDescription="@string/menufragmentimageview"
         android:scaleType="centerInside"
         android:src="@drawable/drawericon" />
 
@@ -32,7 +32,8 @@
             android:textColor="#FFFFFF"
             android:background="@drawable/language_button"
             android:onClick="changeToEnglish"
-            android:text="English" />
+            android:text="@string/english"
+            android:contentDescription="Hindi Button"/>
 
         <Button
             android:id="@+id/hindiButton"
@@ -43,7 +44,8 @@
             android:layout_weight=".5"
             android:background="@drawable/language_button"
             android:onClick="changeToHindi"
-            android:text="Hindi" />
+            android:text="@string/hindi"
+            android:contentDescription="@string/hindi_button"/>
     </LinearLayout>
 
     <View
@@ -69,7 +71,8 @@
             android:gravity="start|center"
             android:layout_marginStart="10dp"
             android:onClick="couchView"
-            android:text="Couch View" />
+            android:contentDescription="@string/couch_view_button"
+            android:text="@string/couch_view" />
     </com.balysv.materialripple.MaterialRippleLayout>
 
     <com.balysv.materialripple.MaterialRippleLayout
@@ -86,7 +89,8 @@
             android:layout_marginStart="10dp"
             android:background="@android:color/transparent"
             android:onClick="subscribe"
-            android:text="Subscribe to YouTube" />
+            android:contentDescription="@string/subscribe_to_youtube_button"
+            android:text="@string/subscribe_to_youtube" />
     </com.balysv.materialripple.MaterialRippleLayout>
 
     <com.balysv.materialripple.MaterialRippleLayout
@@ -103,7 +107,8 @@
             android:layout_marginStart="10dp"
             android:background="@android:color/transparent"
             android:onClick="likeOnFacebook"
-            android:text="Like on Facebook" />
+            android:contentDescription="@string/like_on_facebook_button"
+            android:text="@string/like_on_facebook" />
     </com.balysv.materialripple.MaterialRippleLayout>
 
     <com.balysv.materialripple.MaterialRippleLayout
@@ -120,7 +125,8 @@
             android:layout_marginStart="10dp"
             android:background="@android:color/transparent"
             android:onClick="shareLinkToApp"
-            android:text="Share app" />
+            android:contentDescription="@string/share_app_button"
+            android:text="@string/share_app" />
     </com.balysv.materialripple.MaterialRippleLayout>
 
     <com.balysv.materialripple.MaterialRippleLayout
@@ -137,6 +143,7 @@
             android:layout_marginStart="10dp"
             android:background="@android:color/transparent"
             android:onClick="feedback"
-            android:text="Feedback Bhejo" />
+            android:contentDescription="@string/feedback_button"
+            android:text="@string/feedback_bhejo" />
     </com.balysv.materialripple.MaterialRippleLayout>
 </LinearLayout>
