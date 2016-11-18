@@ -3,6 +3,7 @@ package in.newsmeme;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
@@ -37,25 +38,24 @@ public class VideoFragment extends Fragment {
     }
 
     @Override
-    @SuppressLint("SetJavaScriptEnabled")
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ConnectivityManager connectivityManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
             v = inflater.inflate(R.layout.fragment_video, container, false);
-            video = getArguments().getString("link");                //"iS1g8G_njx8";
-            title = getArguments().getString("title");
-            desc = getArguments().getString("desc");
-            narratorName = getResources().getString(R.string.narratorName_By_Text) + " " + getArguments().getString("narrator");
-            narratorImage = getArguments().getInt("narratorImage");
+            video = getArguments().getString(getString(R.string.link));                //"iS1g8G_njx8";
+            title = getArguments().getString(getString(R.string.title_));
+            desc = getArguments().getString(getString(R.string.desc));
+            narratorName = getResources().getString(R.string.narratorName_By_Text) + " " + getArguments().getString(getString(R.string.narrator_intent_extra));
+            narratorImage = getArguments().getInt(getString(R.string.narrator_image));
 
             titleTV = (AutofitTextView) v.findViewById(R.id.title);
-            Typeface face = Typeface.createFromAsset(getContext().getAssets(), "fonts/TisaPro-Bold.otf");
+            Typeface face = Typeface.createFromAsset(getContext().getAssets(), getString(R.string.typeface_tisapro_location));
             titleTV.setTypeface(face);
             titleTV.setText(title);
 
             descTV = (AutofitTextView) v.findViewById(R.id.description);
-            face = Typeface.createFromAsset(getContext().getAssets(), "fonts/TisaPro-Regular.otf");
+            face = Typeface.createFromAsset(getContext().getAssets(), getString(R.string.typeface_tisapro_regular_location));
             descTV.setTypeface(face);
             descTV.setText(desc);
 
@@ -83,18 +83,18 @@ public class VideoFragment extends Fragment {
 
         } else {
             v = inflater.inflate(R.layout.fragment_layout_offline, container, false);
-            title = getArguments().getString("title");
-            desc = getArguments().getString("desc");
-            narratorName = getResources().getString(R.string.narratorName_By_Text) + " " + getArguments().getString("narrator");
-            narratorImage = getArguments().getInt("narratorImage");
+            title = getArguments().getString(getString(R.string.title_));
+            desc = getArguments().getString(getString(R.string.desc));
+            narratorName = getResources().getString(R.string.narratorName_By_Text) + " " + getArguments().getString(getString(R.string.narrator_intent_extra));
+            narratorImage = getArguments().getInt(getString(R.string.narrator_image));
 
             titleTV = (AutofitTextView) v.findViewById(R.id.title);
-            Typeface face = Typeface.createFromAsset(getContext().getAssets(), "fonts/TisaPro-Bold.otf");
+            Typeface face = Typeface.createFromAsset(getContext().getAssets(), getString(R.string.typeface_tisapro_location));
             titleTV.setTypeface(face);
             titleTV.setText(title);
 
             descTV = (AutofitTextView) v.findViewById(R.id.description);
-            face = Typeface.createFromAsset(getContext().getAssets(), "fonts/TisaPro-Regular.otf");
+            face = Typeface.createFromAsset(getContext().getAssets(), getString(R.string.typeface_tisapro_regular_location));
             descTV.setTypeface(face);
             descTV.setText(desc);
 /*
@@ -119,11 +119,11 @@ public class VideoFragment extends Fragment {
 
         VideoFragment f = new VideoFragment();
         Bundle b = new Bundle();
-        b.putString("title", title);
-        b.putString("desc", desc);
-        b.putString("link", link);
-        b.putString("narrator", narrator);
-        b.putInt("narratorImage", narratorImage);
+        b.putString(Resources.getSystem().getString(R.string.title_), title);
+        b.putString(Resources.getSystem().getString(R.string.desc), desc);
+        b.putString(Resources.getSystem().getString(R.string.link), link);
+        b.putString(Resources.getSystem().getString(R.string.narrator_intent_extra), narrator);
+        b.putInt(Resources.getSystem().getString(R.string.narrator_image), narratorImage);
         f.setArguments(b);
 
         return f;
@@ -140,7 +140,6 @@ public class VideoFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.d("FRAGMENT", "onDestroyView: " + title);
     }
 
     @Override

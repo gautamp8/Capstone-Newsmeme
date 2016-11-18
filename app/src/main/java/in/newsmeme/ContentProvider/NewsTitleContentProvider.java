@@ -3,21 +3,21 @@ package in.newsmeme.ContentProvider;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+
+import in.newsmeme.R;
 
 /**
  * Created by brainbreaker on 17/11/16.
  */
 
 public class NewsTitleContentProvider extends ContentProvider {
-
-    public static final String PROVIDER_NAME = "in.newsmeme.ContentProvider.NewsTitleContentProvider";
-
     NewsTitleDBHandler dbHelper ;
-    public static final String AUTHORITY = "ourContentProviderAuthorities";//specific for our our app, will be specified in maninfed 
-    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+    public static final String AUTHORITY = Resources.getSystem().getString(R.string.contentProviderAuthorities);//specific for our our app, will be specified in maninfed 
+    public static final Uri CONTENT_URI = Uri.parse(Resources.getSystem().getString(R.string.content_provider_base_URL) + AUTHORITY);
 
     @Override
     public boolean onCreate() {

@@ -24,7 +24,7 @@ import in.newsmeme.R;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
-    private static final String TAG = "MyFirebaseMsgService";
+    private final String TAG = getClass().getSimpleName();
 
     /**
      * Called when message is received.
@@ -46,19 +46,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
-        Log.e(TAG, "From: " + remoteMessage.getFrom());
         //To get a Bitmap image from the URL received
-        Bitmap bitmap = getBitmapfromUrl(remoteMessage.getData().get("image"));
+        Bitmap bitmap = getBitmapfromUrl(remoteMessage.getData().get(getString(R.string.image)));
         sendNotification(remoteMessage.getData(), bitmap);
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
-            Log.e(TAG, "Message data payload: " + remoteMessage.getData());
             sendNotification(remoteMessage.getData(), bitmap);
         }
 
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
-            Log.e(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
             sendNotification(remoteMessage.getData(), bitmap);
         }
 
@@ -86,8 +83,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
          NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                  .setLargeIcon(image)/*Notification icon image*/
                  .setSmallIcon(R.mipmap.ic_launcher)
-                 .setContentTitle(data.get("New Video!"))
-                 .setContentText(data.get("content"))
+                 .setContentTitle(data.get(getString(R.string.new_video)))
+                 .setContentText(data.get(getString(R.string.content)))
                  .setStyle(new NotificationCompat.BigPictureStyle()
                          .bigPicture(image))/*Notification with Image*/
                  .setAutoCancel(true)

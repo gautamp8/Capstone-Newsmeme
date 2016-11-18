@@ -5,10 +5,13 @@ import java.util.List;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import in.newsmeme.R;
 
 public class NewsTitleDBHandler extends SQLiteOpenHelper {
 
@@ -17,14 +20,14 @@ public class NewsTitleDBHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     // Database Name
-    private static final String DATABASE_NAME = "newsManager";
+    private static final String DATABASE_NAME = Resources.getSystem().getString(R.string.news_Manager);
 
-    // Newss table name
-    public static final String TABLE_NEWS = "news";
+    // News table name
+    public static final String TABLE_NEWS = Resources.getSystem().getString(R.string.news);
 
     // Newss Table Columns names
-    public static final String KEY_ID = "id";
-    public static final String KEY_TITLE = "title";
+    public static final String KEY_ID = Resources.getSystem().getString(R.string.id);
+    public static final String KEY_TITLE = Resources.getSystem().getString(R.string.title);
 
     public NewsTitleDBHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -33,10 +36,9 @@ public class NewsTitleDBHandler extends SQLiteOpenHelper {
     // Creating Tables
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_NEWS_TABLE = "CREATE TABLE " + TABLE_NEWS + "("
+        String CREATE_NEWS_TABLE = Resources.getSystem().getString(R.string.CREATE_TABLE) + TABLE_NEWS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY," + KEY_TITLE + " TEXT)";
         db.execSQL(CREATE_NEWS_TABLE);
-        Log.d("onCreateDB","DB Created");
     }
 
     // Upgrading database

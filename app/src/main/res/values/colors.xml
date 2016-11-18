@@ -17,4 +17,5 @@
     <color name="facebookShareButton">#3b5998</color>
     <color name="shareButton">#fabc3d</color>
     <color name="facebookMessengerShareButton">#e6effe</color>
+    <string name="status_bar_color">#512DA8</string>
 </resources>

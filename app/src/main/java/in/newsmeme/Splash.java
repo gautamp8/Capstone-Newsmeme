@@ -32,7 +32,7 @@ public class Splash extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.parseColor("#512DA8"));
+            window.setStatusBarColor(Color.parseColor(getString(R.string.status_bar_color)));
         }
     }
 
@@ -53,14 +53,14 @@ public class Splash extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             Intent openMainActivity = new Intent(context, MainActivity.class);
-            openMainActivity.putStringArrayListExtra("titles", intent.getStringArrayListExtra("titles"));
-            openMainActivity.putStringArrayListExtra("descs", intent.getStringArrayListExtra("descs"));
-            openMainActivity.putStringArrayListExtra("videoIds", intent.getStringArrayListExtra("videoIds"));
-            openMainActivity.putStringArrayListExtra("idsForSDK", intent.getStringArrayListExtra("idsForSDK"));
-            openMainActivity.putStringArrayListExtra("links", intent.getStringArrayListExtra("links"));
-            openMainActivity.putStringArrayListExtra("shareUrl", intent.getStringArrayListExtra("shareUrl"));
-            openMainActivity.putStringArrayListExtra("shortShareUrl", intent.getStringArrayListExtra("shortShareUrl"));
-            openMainActivity.putStringArrayListExtra("narrator", intent.getStringArrayListExtra("narrator"));
+            openMainActivity.putStringArrayListExtra(getString(R.string.title_intent_extra), intent.getStringArrayListExtra(getString(R.string.title_intent_extra)));
+            openMainActivity.putStringArrayListExtra(getString(R.string.descs_intent_extra), intent.getStringArrayListExtra(getString(R.string.descs_intent_extra)));
+            openMainActivity.putStringArrayListExtra(getString(R.string.videoID_intent_extra), intent.getStringArrayListExtra(getString(R.string.videoID_intent_extra)));
+            openMainActivity.putStringArrayListExtra(getString(R.string.idForSdk_intent_extra), intent.getStringArrayListExtra(getString(R.string.idForSdk_intent_extra)));
+            openMainActivity.putStringArrayListExtra(getString(R.string.links_intent_extra), intent.getStringArrayListExtra(getResources().getString(R.string.links_intent_extra)));
+            openMainActivity.putStringArrayListExtra(getString(R.string.shareUrl_intent_extra), intent.getStringArrayListExtra(getString(R.string.shareUrl_intent_extra)));
+            openMainActivity.putStringArrayListExtra(getString(R.string.shortShareUrl_intent_extra), intent.getStringArrayListExtra(getString(R.string.shortShareUrl_intent_extra)));
+            openMainActivity.putStringArrayListExtra(getString(R.string.narrator_intent_extra), intent.getStringArrayListExtra(getString(R.string.narrator_intent_extra)));
             startActivity(openMainActivity);
         }
     }

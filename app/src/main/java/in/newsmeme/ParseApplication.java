@@ -1,15 +1,16 @@
 package in.newsmeme;
 
 import android.app.Application;
+import android.content.res.Resources;
 
 import com.parse.Parse;
 /**
- * Created by Gautam Prajaapti on 16-Nov-16.
+ * Created by Gautam Prajapati on 16-Nov-16.
  */
 public class ParseApplication extends Application {
 
-    public static final String APP_ID = "2wzSL2IYgy38Q378nNoKSJ23qqqSy5Uu1BW7Slax";
-    public static final String CLIENT_KEY = "DceJGwZ5lMYnXMvtLHXkYjVlkDbx5YD6cpDNMG0k";
+    public static String APP_ID = Resources.getSystem().getString(R.string.parse_app_id);
+    public static String CLIENT_KEY = Resources.getSystem().getString(R.string.parse_client_key);
     @Override
     public void onCreate() {
         super.onCreate();

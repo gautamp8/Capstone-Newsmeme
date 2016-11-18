@@ -38,17 +38,17 @@ public class MyMenuFragment extends MenuFragment {
             while ((c = fis.read()) != -1) {
                 lang = lang + Character.toString((char) c);
             }
-            if(lang.equals("en")){
+            if(lang.equals(getResources().getString(R.string.englishLang))){
                 hindiButton.setBackgroundResource(R.color.transparent);
                 englishButton.setBackgroundResource(R.color.colorPrimaryTesing);
-                englishButton.setTextColor(Color.parseColor("#FFFFFF"));
-                hindiButton.setTextColor(Color.parseColor("#000000"));
+                englishButton.setTextColor(Color.WHITE);
+                hindiButton.setTextColor(Color.BLACK);
             }
-            else if(lang.equals("hi")){
+            else if(lang.equals(getResources().getString(R.string.hindiLang))){
                 englishButton.setBackgroundResource(R.color.transparent);
                 hindiButton.setBackgroundResource(R.color.colorPrimaryTesing);
-                hindiButton.setTextColor(Color.parseColor("#FFFFFF"));
-                englishButton.setTextColor(Color.parseColor("#000000"));
+                hindiButton.setTextColor(Color.WHITE);
+                englishButton.setTextColor(Color.BLACK);
             }
             fis.close();
         } catch (Exception e) {

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
@@ -63,7 +64,7 @@ import in.newsmeme.Widget.ListProvider;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
-    private static final String TAG = "MainActivity";
+    private final String TAG = getClass().getSimpleName();
     LeftDrawerLayout leftDrawerLayout = null;
     ViewPager pager;
     int position;
@@ -83,10 +84,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     ArrayList<String> ShareUrl = new ArrayList<>();
     ArrayList<String> ShortShareUrl = new ArrayList<>();
     List<String> emails = new ArrayList<String>();
-    final ParseQuery<ParseObject> query = ParseQuery.getQuery("newsmeme");
+    final ParseQuery<ParseObject> query = ParseQuery.getQuery(getString(R.string.newsmeme));
     ProgressDialog progressDialog = null;
     //SocialNetworkManager socialNetworkManager;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,26 +96,22 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         NewsTitleDBHandler newsTitleDBHandler = new NewsTitleDBHandler(this);
 
         Intent intent = getIntent();
-        Titles = intent.getStringArrayListExtra("titles");
-        Descriptions = intent.getStringArrayListExtra("descs");
-        VideoIDs = intent.getStringArrayListExtra("videoIds");
-        Links = intent.getStringArrayListExtra("links");
-        ShareUrl = intent.getStringArrayListExtra("shareUrl");
-        ShortShareUrl = intent.getStringArrayListExtra("shortShareUrl");
+        Titles = intent.getStringArrayListExtra(getString(R.string.title_intent_extra));
+        Descriptions = intent.getStringArrayListExtra(getString(R.string.descs_intent_extra));
+        VideoIDs = intent.getStringArrayListExtra(getString(R.string.videoID_intent_extra));
+        Links = intent.getStringArrayListExtra(getString(R.string.links_intent_extra));
+        ShareUrl = intent.getStringArrayListExtra(getString(R.string.shareUrl_intent_extra));
+        ShortShareUrl = intent.getStringArrayListExtra(getString(R.string.shortShareUrl_intent_extra));
         videoView = (WebView) findViewById(R.id.videoView);
-        IDsForYTsdk = intent.getStringArrayListExtra("idsForSDK");
-
-        for (int i = 0; i < IDsForYTsdk.size(); i++)
-            System.out.println("IDs "+IDsForYTsdk.get(i));
+        IDsForYTsdk = intent.getStringArrayListExtra(getString(R.string.idForSdk_intent_extra));
 
         if (Titles!=null){
             for (int i = 0; i < Titles.size(); i++) {
                 newsTitleDBHandler.addNews(new News(i, Titles.get(i)));
-                Log.e("News Added: ", Titles.get(i));
             }
         }
 
-        Narrator = intent.getStringArrayListExtra("narrator");
+        Narrator = intent.getStringArrayListExtra(getString(R.string.narrator_intent_extra));
 
         myVib = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
         pager = (ViewPager) findViewById(R.id.viewPager);
@@ -130,9 +126,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         getLoaderManager().initLoader(0, null, this);
 
         // FCM
-        FirebaseMessaging.getInstance().subscribeToTopic("news");
-        Log.e(TAG, "Subscribed to news topic");
-        Log.e(TAG, "InstanceID token: " + FirebaseInstanceId.getInstance().getToken());
+        FirebaseMessaging.getInstance().subscribeToTopic(getString(R.string.news));
+        Log.e(TAG, getString(R.string.subscribed_news));
+        Log.e(TAG, getString(R.string.instance_token) + FirebaseInstanceId.getInstance().getToken());
     }
 
     @Override
@@ -161,7 +157,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if(cursor.moveToFirst()){
             do{
                 String data = cursor.getString(cursor.getColumnIndex(NewsTitleDBHandler.KEY_TITLE));
-                Log.e("cursor: ", data);
                 ListProvider.populateListItem(data);
             } while(cursor.moveToNext());
         }
@@ -291,8 +286,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             myVib.vibrate(50);
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.check_out) + ShareUrl.get(position));
-            intent.setType("text/*");
-            Intent i = Intent.createChooser(intent, "Send via ");
+            intent.setType(getString(R.string.text_intent_type));
+            Intent i = Intent.createChooser(intent, getString(R.string.send_via));
             startActivity(i);
         } catch (Exception e) {
             e.printStackTrace();
@@ -320,38 +315,38 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 e.printStackTrace();
             }
             //query.fromLocalDatastore();
-            query.whereExists("youtube_id");
+            query.whereExists(getString(R.string.youtube_id));
             query.setLimit(30);
-            query.orderByDescending("createdAt");
-            if (lang.equals("en"))
-                query.whereEqualTo("language", "en");
-            else if (lang.equals("hi"))
-                query.whereEqualTo("language", "hi");
+            query.orderByDescending(getString(R.string.created_At));
+            if (lang.equals(getString(R.string.englishLang)))
+                query.whereEqualTo(getString(R.string.language), getString(R.string.englishLang));
+            else if (lang.equals(getString(R.string.hindiLang)))
+                query.whereEqualTo(getString(R.string.language), getString(R.string.hindiLang));
             query.findInBackground(new FindCallback<ParseObject>() {
                 public void done(final List<ParseObject> idList, ParseException e) {
                     if (e == null) {
                         for (int i = 0; i < idList.size(); i++) {
-                            Titles.add(i, idList.get(i).get("video_title").toString());
-                            Descriptions.add(i, idList.get(i).get("video_script").toString());
-                            ShareUrl.add(i, idList.get(i).get("share_url").toString());
-                            ShortShareUrl.add(i, idList.get(i).get("short_share_url").toString());
-                            VideoIDs.add(i, "https://www.youtube.com/embed/" + idList.get(i).get("youtube_id").toString() + "?rel=0&amp;controls=0&amp;showinfo=0&amp;autoplay=1");
+                            Titles.add(i, idList.get(i).get(getString(R.string.video_title)).toString());
+                            Descriptions.add(i, idList.get(i).get(getString(R.string.video_script)).toString());
+                            ShareUrl.add(i, idList.get(i).get(getString(R.string.share_url)).toString());
+                            ShortShareUrl.add(i, idList.get(i).get(getString(R.string.short_share_url)).toString());
+                            VideoIDs.add(i, getString(R.string.youtube_embed_base_url) + idList.get(i).get(getString(R.string.youtube_id)).toString() + getString(R.string.youtube_player_url_extension));
                             IDsForYTsdk.add(i, YouTubeUrlParser.getVideoId(VideoIDs.get(i)));
-                            if (idList.get(i).get("narrator_name") != null)
-                                Narrator.add(i, idList.get(i).get("narrator_name").toString());
+                            if (idList.get(i).get(getString(R.string.narrator_nam)) != null)
+                                Narrator.add(i, idList.get(i).get(getString(R.string.narrator_nam)).toString());
                             else
-                                Narrator.add(i, "Bot");
+                                Narrator.add(i, getString(R.string.bot));
                         }
 
                         Intent intent = new Intent(MainActivity.this, MainActivity.class);
-                        intent.putStringArrayListExtra("titles", Titles);
-                        intent.putStringArrayListExtra("descs", Descriptions);
-                        intent.putStringArrayListExtra("videoIds", VideoIDs);
-                        intent.putStringArrayListExtra("shareUrl", ShareUrl);
-                        intent.putStringArrayListExtra("shortShareUrl", ShortShareUrl);
-                        intent.putStringArrayListExtra("idsForSDK", IDsForYTsdk);
-                        intent.putStringArrayListExtra("narrator", Narrator);
-                        ParseObject.unpinAllInBackground("objectsID", idList, new DeleteCallback() {
+                        intent.putStringArrayListExtra(getString(R.string.title_intent_extra), Titles);
+                        intent.putStringArrayListExtra(getString(R.string.descs_intent_extra), Descriptions);
+                        intent.putStringArrayListExtra(getString(R.string.videoID_intent_extra), VideoIDs);
+                        intent.putStringArrayListExtra(getString(R.string.shareUrl_intent_extra), ShareUrl);
+                        intent.putStringArrayListExtra(getString(R.string.shortShareUrl_intent_extra), ShortShareUrl);
+                        intent.putStringArrayListExtra(getString(R.string.idForSdk_intent_extra), IDsForYTsdk);
+                        intent.putStringArrayListExtra(getString(R.string.narrator_intent_extra), Narrator);
+                        ParseObject.unpinAllInBackground(getString(R.string.objectsID_parse), idList, new DeleteCallback() {
                             public void done(ParseException e) {
                                 if (e != null) {
                                     return;
@@ -385,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         } catch (Exception e) {
             e.printStackTrace();
         }
-        initShareIntent("kat");
+        initShareIntent(getString(R.string.facebook_app_share_kat));
     }
 
     public void shareFacebookMessenger(View view) {
@@ -394,7 +389,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         } catch (Exception e) {
             e.printStackTrace();
         }
-        initShareIntent("orc");
+        initShareIntent(getString(R.string.facebook_package_orc));
     }
 
     public void shareTwitter(View view) {
@@ -403,11 +398,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         } catch (Exception e) {
             e.printStackTrace();
         }
-        initShareIntent("twi");
+        initShareIntent(getString(R.string.twitter_package_string));
     }
 
     private boolean checkPermission() {
-        String permission = "android.permission.WRITE_EXTERNAL_STORAGE";
+        String permission = getString(R.string.external_storage_permission);
         int res = getApplicationContext().checkCallingOrSelfPermission(permission);
         if (res != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -429,7 +424,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     Boolean made = myDir.mkdirs();
                     //Toast.makeText(this, "Directory made:"+made, Toast.LENGTH_SHORT).show();
                 }
-                String fname = "screenMeme" + position;
+                String fname = getString(R.string.screenMeme) + position;
                 File file = new File(myDir, fname);
                 try {
                     FileOutputStream out = new FileOutputStream(file);
@@ -441,9 +436,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 }
                 Uri uri = Uri.fromFile(file);
                 Intent intent = new Intent();
-                intent.setPackage("com.whatsapp");
+                intent.setPackage(getString(R.string.whatsapp_package_name));
                 intent.setAction(Intent.ACTION_SEND);
-                intent.setType("image/*");
+                intent.setType(getString(R.string.image_intent_type));
                 intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.whatsapp_share_text));
                 intent.putExtra(Intent.EXTRA_STREAM, uri);
                 startActivity(intent);
@@ -454,9 +449,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         } else {
             myVib.vibrate(50);
             Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("text/*");
+            intent.setType(getString(R.string.text_intent_type));
             try {
-                intent.setPackage("com.whatsapp");
+                intent.setPackage(getString(R.string.whatsapp_package_name));
             } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(MainActivity.this, R.string.app_not_installed, Toast.LENGTH_SHORT).show();
@@ -464,13 +459,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             //TODO: APP CAN CRASH HERE
             if (position > 0) {
                 try {
-                    intent.putExtra(Intent.EXTRA_TEXT, Titles.get(position - 1) + ": " + Links.get(position - 1));       //position problems
+                    intent.putExtra(Intent.EXTRA_TEXT, Titles.get(position - 1) + getString(R.string.colon_space) + Links.get(position - 1));       //position problems
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else {
                 try {
-                    intent.putExtra(Intent.EXTRA_TEXT, Titles.get(0) + ": " + Links.get(0));       //position problems
+                    intent.putExtra(Intent.EXTRA_TEXT, Titles.get(0) + getString(R.string.colon_space) + Links.get(0));       //position problems
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -484,23 +479,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         try {
             boolean found = false;
             Intent share = new Intent(Intent.ACTION_SEND);
-            share.setType("text/plain");
+            share.setType(getString(R.string.intent_text_plain_type));
             // gets the list of intents that can be loaded.
             List<ResolveInfo> resInfo = getPackageManager().queryIntentActivities(share, 0);
             if (!resInfo.isEmpty()) {
                 for (ResolveInfo info : resInfo) {
                     if (info.activityInfo.packageName.toLowerCase().contains(type) || info.activityInfo.name.toLowerCase().contains(type)) {
                         if (position > 0) {
-                            if (type.equals("twi")) {
-                                share.putExtra(Intent.EXTRA_TEXT, Titles.get(position - 1) + ": " + ShortShareUrl.get(position - 1) + " | via @newsmemedotin");
+                            if (type.equals(getString(R.string.twitter_package_string))) {
+                                share.putExtra(Intent.EXTRA_TEXT, Titles.get(position - 1) + getString(R.string.colon_space) + ShortShareUrl.get(position - 1) + getString(R.string.newsmeme_dot_in));
                                 //Toast.makeText(this, "Hello "+Titles.get(position - 1) , Toast.LENGTH_SHORT).show();
                             } else
-                                share.putExtra(Intent.EXTRA_TEXT, Titles.get(position - 1) + ": " + ShareUrl.get(position - 1));         //position problems
+                                share.putExtra(Intent.EXTRA_TEXT, Titles.get(position - 1) + getString(R.string.colon_space) + ShareUrl.get(position - 1));         //position problems
                         } else {
-                            if (type.equals("twi"))
-                                share.putExtra(Intent.EXTRA_TEXT, Titles.get(0) + ": " + ShortShareUrl.get(0) + " | via @newsmemedotin");
+                            if (type.equals(getString(R.string.twitter_package_string)))
+                                share.putExtra(Intent.EXTRA_TEXT, Titles.get(0) + getString(R.string.colon_space) + ShortShareUrl.get(0) + getString(R.string.newsmeme_dot_in));
                             else
-                                share.putExtra(Intent.EXTRA_TEXT, Titles.get(0) + ": " + ShareUrl.get(0));
+                                share.putExtra(Intent.EXTRA_TEXT, Titles.get(0) + getString(R.string.colon_space) + ShareUrl.get(0));
                         }
                         share.setPackage(info.activityInfo.packageName);
                         found = true;
@@ -613,37 +608,37 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 e.printStackTrace();
             }
             //query.fromLocalDatastore();
-            query.whereExists("youtube_id");
+            query.whereExists(getString(R.string.youtube_id));
             query.setLimit(30);
-            query.orderByDescending("createdAt");
-            if (lang.equals("en"))
-                query.whereEqualTo("language", "en");
-            else if (lang.equals("hi"))
-                query.whereEqualTo("language", "hi");
+            query.orderByDescending(getString(R.string.created_At));
+            if (lang.equals(getString(R.string.englishLang)))
+                query.whereEqualTo(getString(R.string.language), getString(R.string.englishLang));
+            else if (lang.equals(getString(R.string.hindiLang)))
+                query.whereEqualTo(getString(R.string.language), getString(R.string.hindiLang));
             query.findInBackground(new FindCallback<ParseObject>() {
                 public void done(final List<ParseObject> idList, ParseException e) {
                     if (e == null) {
                         for (int i = 0; i < idList.size(); i++) {
-                            Titles.add(i, idList.get(i).get("video_title").toString());
-                            Descriptions.add(i, idList.get(i).get("video_script").toString());
-                            VideoIDs.add(i, "https://www.youtube.com/embed/" + idList.get(i).get("youtube_id").toString() + "?rel=0&amp;controls=0&amp;showinfo=0&amp;autoplay=1");
+                            Titles.add(i, idList.get(i).get(getString(R.string.video_title)).toString());
+                            Descriptions.add(i, idList.get(i).get(getString(R.string.video_script)).toString());
+                            VideoIDs.add(i, getString(R.string.youtube_embed_base_url) + idList.get(i).get(getString(R.string.youtube_id)).toString() + getString(R.string.youtube_player_url_extension));
                             IDsForYTsdk.add(i, YouTubeUrlParser.getVideoId(VideoIDs.get(i)));
-                            ShareUrl.add(i, idList.get(i).get("share_url").toString());
-                            ShortShareUrl.add(i, idList.get(i).get("short_share_url").toString());
-                            if (idList.get(i).get("narrator_name") != null)
-                                Narrator.add(i, idList.get(i).get("narrator_name").toString());
+                            ShareUrl.add(i, idList.get(i).get(getString(R.string.share_url)).toString());
+                            ShortShareUrl.add(i, idList.get(i).get(getString(R.string.short_share_url)).toString());
+                            if (idList.get(i).get(getString(R.string.narrator_nam)) != null)
+                                Narrator.add(i, idList.get(i).get(getString(R.string.narrator_nam)).toString());
                             else
-                                Narrator.add(i, "Bot");
+                                Narrator.add(i, getString(R.string.bot));
                         }
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        intent.putStringArrayListExtra("titles", Titles);
-                        intent.putStringArrayListExtra("descs", Descriptions);
-                        intent.putStringArrayListExtra("videoIds", VideoIDs);
-                        intent.putStringArrayListExtra("shareUrl", ShareUrl);
-                        intent.putStringArrayListExtra("shortShareUrl", ShortShareUrl);
-                        intent.putStringArrayListExtra("idsForSDK", IDsForYTsdk);
-                        intent.putStringArrayListExtra("narrator", Narrator);
-                        ParseObject.unpinAllInBackground("objectsID", idList, new DeleteCallback() {
+                        intent.putStringArrayListExtra(getString(R.string.title_intent_extra), Titles);
+                        intent.putStringArrayListExtra(getString(R.string.descs_intent_extra), Descriptions);
+                        intent.putStringArrayListExtra(getString(R.string.videoID_intent_extra), VideoIDs);
+                        intent.putStringArrayListExtra(getString(R.string.shareUrl_intent_extra), ShareUrl);
+                        intent.putStringArrayListExtra(getString(R.string.shortShareUrl_intent_extra), ShortShareUrl);
+                        intent.putStringArrayListExtra(getString(R.string.idForSdk_intent_extra), IDsForYTsdk);
+                        intent.putStringArrayListExtra(getString(R.string.narrator_intent_extra), Narrator);
+                        ParseObject.unpinAllInBackground(getString(R.string.objectsID_parse), idList, new DeleteCallback() {
                             public void done(ParseException e) {
                                 if (e != null) {
                                     return;
@@ -694,37 +689,37 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 e.printStackTrace();
             }
             //query.fromLocalDatastore();
-            query.whereExists("youtube_id");
+            query.whereExists(getString(R.string.youtube_id));
             query.setLimit(30);
-            query.orderByDescending("createdAt");
-            if (lang.equals("en"))
-                query.whereEqualTo("language", "en");
-            else if (lang.equals("hi"))
-                query.whereEqualTo("language", "hi");
+            query.orderByDescending(getString(R.string.created_At));
+            if (lang.equals(getString(R.string.englishLang)))
+                query.whereEqualTo(getString(R.string.language), getString(R.string.englishLang));
+            else if (lang.equals(getString(R.string.hindiLang)))
+                query.whereEqualTo(getString(R.string.language), getString(R.string.hindiLang));
             query.findInBackground(new FindCallback<ParseObject>() {
                 public void done(final List<ParseObject> idList, ParseException e) {
                     if (e == null) {
                         for (int i = 0; i < idList.size(); i++) {
-                            Titles.add(i, idList.get(i).get("video_title").toString());
-                            Descriptions.add(i, idList.get(i).get("video_script").toString());
-                            ShareUrl.add(i, idList.get(i).get("share_url").toString());
-                            ShortShareUrl.add(i, idList.get(i).get("short_share_url").toString());
-                            VideoIDs.add(i, "https://www.youtube.com/embed/" + idList.get(i).get("youtube_id").toString() + "?rel=0&amp;controls=0&amp;showinfo=0&amp;autoplay=1");
+                            Titles.add(i, idList.get(i).get(getString(R.string.video_title)).toString());
+                            Descriptions.add(i, idList.get(i).get(getString(R.string.video_script)).toString());
+                            ShareUrl.add(i, idList.get(i).get(getString(R.string.share_url)).toString());
+                            ShortShareUrl.add(i, idList.get(i).get(getString(R.string.short_share_url)).toString());
+                            VideoIDs.add(i, getString(R.string.youtube_embed_base_url) + idList.get(i).get(getString(R.string.youtube_id)).toString() + getString(R.string.youtube_player_url_extension));
                             IDsForYTsdk.add(i, YouTubeUrlParser.getVideoId(VideoIDs.get(i)));
-                            if (idList.get(i).get("narrator_name") != null)
-                                Narrator.add(i, idList.get(i).get("narrator_name").toString());
+                            if (idList.get(i).get(getString(R.string.narrator_nam)) != null)
+                                Narrator.add(i, idList.get(i).get(getString(R.string.narrator_nam)).toString());
                             else
-                                Narrator.add(i, "Bot");
+                                Narrator.add(i, getString(R.string.bot));
                         }
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        intent.putStringArrayListExtra("titles", Titles);
-                        intent.putStringArrayListExtra("descs", Descriptions);
-                        intent.putStringArrayListExtra("videoIds", VideoIDs);
-                        intent.putStringArrayListExtra("shareUrl", ShareUrl);
-                        intent.putStringArrayListExtra("shortShareUrl", ShortShareUrl);
-                        intent.putStringArrayListExtra("idsForSDK", IDsForYTsdk);
-                        intent.putStringArrayListExtra("narrator", Narrator);
-                        ParseObject.unpinAllInBackground("objectsID", idList, new DeleteCallback() {
+                        intent.putStringArrayListExtra(getString(R.string.title_intent_extra), Titles);
+                        intent.putStringArrayListExtra(getString(R.string.descs_intent_extra), Descriptions);
+                        intent.putStringArrayListExtra(getString(R.string.videoID_intent_extra), VideoIDs);
+                        intent.putStringArrayListExtra(getString(R.string.shareUrl_intent_extra), ShareUrl);
+                        intent.putStringArrayListExtra(getString(R.string.shortShareUrl_intent_extra), ShortShareUrl);
+                        intent.putStringArrayListExtra(getString(R.string.idForSdk_intent_extra), IDsForYTsdk);
+                        intent.putStringArrayListExtra(getString(R.string.narrator_intent_extra), Narrator);
+                        ParseObject.unpinAllInBackground(getString(R.string.objectsID_parse), idList, new DeleteCallback() {
                             public void done(ParseException e) {
                                 if (e != null) {
                                     return;
@@ -759,18 +754,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     }
 
-    public static String FACEBOOK_URL = "https://www.facebook.com/newsmemedotin";
-    public static String FACEBOOK_PAGE_ID = "NewsMeme";
+    public static String FACEBOOK_URL = Resources.getSystem().getString(R.string.facebook_newsmeme);
+    public static String FACEBOOK_PAGE_ID = Resources.getSystem().getString(R.string.app_name);
 
     //method to get the right URL to use in the intent
     public String getFacebookPageURL(Context context) {
         PackageManager packageManager = context.getPackageManager();
         try {
-            int versionCode = packageManager.getPackageInfo("com.facebook.katana", 0).versionCode;
+            int versionCode = packageManager.getPackageInfo(getString(R.string.facebook_package_name), 0).versionCode;
             if (versionCode >= 3002850) { //newer versions of fb app
-                return "fb://facewebmodal/f?href=" + FACEBOOK_URL;
+                return getString(R.string.facebook_url) + FACEBOOK_URL;
             } else { //older versions of fb app
-                return "fb://page/" + FACEBOOK_PAGE_ID;
+                return getString(R.string.facebook_page_url) + FACEBOOK_PAGE_ID;
             }
         } catch (PackageManager.NameNotFoundException e) {
             return FACEBOOK_URL; //normal web url
@@ -787,8 +782,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void shareLinkToApp(View view) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_app_link));
-        intent.setType("text/*");
-        Intent i = Intent.createChooser(intent, "Send via ");
+        intent.setType(getString(R.string.text_intent_type));
+        Intent i = Intent.createChooser(intent, getResources().getString(R.string.send_via));
         startActivity(i);
     }
 
@@ -805,7 +800,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void feedback(View view) {
         try {
             final Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("text/plain");
+            intent.setType(getString(R.string.intent_text_plain_type));
             intent.putExtra(Intent.EXTRA_EMAIL, new String[]{getResources().getString(R.string.emailID)});
             intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.emailSubject));
             intent.putExtra(Intent.EXTRA_BCC, getString(R.string.my_email));
@@ -813,8 +808,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             final List<ResolveInfo> matches = pm.queryIntentActivities(intent, 0);
             ResolveInfo best = null;
             for (final ResolveInfo info : matches)
-                if (info.activityInfo.packageName.endsWith(".gm") ||
-                        info.activityInfo.name.toLowerCase().contains("gmail")) best = info;
+                if (info.activityInfo.packageName.endsWith(getString(R.string.gmail_package_end)) ||
+                        info.activityInfo.name.toLowerCase().contains(getString(R.string.gmail))) best = info;
             if (best != null)
                 intent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
             startActivity(intent);

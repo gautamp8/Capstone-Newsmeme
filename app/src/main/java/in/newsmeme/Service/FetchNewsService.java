@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AlertDialog;
@@ -33,7 +34,7 @@ public class FetchNewsService extends IntentService {
 
     String lang;
     static Boolean firstRun;
-    final ParseQuery<ParseObject> query = ParseQuery.getQuery("newsmeme");
+    final ParseQuery<ParseObject> query = ParseQuery.getQuery(getString(R.string.parse_query));
 
     ArrayList<String> Titles = new ArrayList<>();
     ArrayList<String> Descriptions = new ArrayList<>();
@@ -44,12 +45,12 @@ public class FetchNewsService extends IntentService {
     ArrayList<String> ShareUrl = new ArrayList<>();
     ArrayList<String> ShortShareUrl = new ArrayList<>();
     public FetchNewsService() {
-        super("FetchNewsService");
+        super(Resources.getSystem().getString(R.string.fetch_news_service));
     }
     @Override
     protected void onHandleIntent(final Intent intent) {
 
-        boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("isFirstRun", true);
+        boolean isFirstRun = getSharedPreferences(getString(R.string.shared_pref), MODE_PRIVATE).getBoolean(getString(R.string.first_run_boolean), true);
         firstRun = isFirstRun;
         if (isFirstRun) {
             ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
@@ -68,46 +69,46 @@ public class FetchNewsService extends IntentService {
                     fos = openFileOutput(getResources().getString(R.string.storeHiObjFile), Context.MODE_PRIVATE);
                     fos.write(getResources().getString(R.string.objHI).getBytes());
                     fos.close();
-                    lang = "en";
-                    query.whereExists("youtube_id");
+                    lang = getResources().getString(R.string.englishLang);
+                    query.whereExists(getString(R.string.youtube_id));
                     query.setLimit(30);
-                    query.orderByDescending("createdAt");
-                    if (lang.equals("en"))
-                        query.whereEqualTo("language", "en");
-                    if (lang.equals("hi"))
-                        query.whereEqualTo("language", "hi");
+                    query.orderByDescending(getString(R.string.created_At));
+                    if (lang.equals(getResources().getString(R.string.englishLang)))
+                        query.whereEqualTo(getString(R.string.language), getResources().getString(R.string.englishLang));
+                    if (lang.equals(getString(R.string.hindiLang)))
+                        query.whereEqualTo(getString(R.string.language),getString(R.string.hindiLang));
                     query.findInBackground(new FindCallback<ParseObject>() {
                         public void done(final List<ParseObject> idList, ParseException e) {
                             if (e == null) {
                                 for (int i = 0; i < idList.size(); i++) {
-                                    VideoIDs.add(i, "https://www.youtube.com/embed/" + idList.get(i).get("youtube_id").toString() + "?rel=0&amp;controls=0&amp;showinfo=0&amp;autoplay=1");
-                                    Titles.add(i, idList.get(i).get("video_title").toString());
-                                    Descriptions.add(i, idList.get(i).get("video_script").toString());
-                                    if (idList.get(i).get("share_url").toString() != null)
-                                        ShareUrl.add(i, idList.get(i).get("share_url").toString());
+                                    VideoIDs.add(i, getString(R.string.youtube_embed_base_url) + idList.get(i).get(getString(R.string.youtube_id)).toString() + getString(R.string.youtube_player_url_extension));
+                                    Titles.add(i, idList.get(i).get(getString(R.string.video_title)).toString());
+                                    Descriptions.add(i, idList.get(i).get(getString(R.string.video_script)).toString());
+                                    if (idList.get(i).get(getString(R.string.share_url)).toString() != null)
+                                        ShareUrl.add(i, idList.get(i).get(getString(R.string.share_url)).toString());
                                     else
-                                        ShareUrl.add(i, idList.get(i).get("video_title").toString() + " @newsmemedotin");
-                                    if (idList.get(i).get("short_share_url").toString() != null)
-                                        ShortShareUrl.add(i, idList.get(i).get("short_share_url").toString());
+                                        ShareUrl.add(i, idList.get(i).get(getString(R.string.video_title)).toString() + getString(R.string.newsmeme_dot_in));
+                                    if (idList.get(i).get(getString(R.string.short_share_url)).toString() != null)
+                                        ShortShareUrl.add(i, idList.get(i).get(getString(R.string.short_share_url)).toString());
                                     else
-                                        ShortShareUrl.add(i, idList.get(i).get("video_title").toString() + " @newsmemedotin");
+                                        ShortShareUrl.add(i, idList.get(i).get(getString(R.string.video_title)).toString() + getString(R.string.newsmeme_dot_in));
                                     IDsForYTsdk.add(i, YouTubeUrlParser.getVideoId(VideoIDs.get(i)));
-                                    FullUrls.add(i, "https://youtu.be/" + IDsForYTsdk.get(i));
-                                    if (idList.get(i).get("narrator_name") != null)
-                                        Narrator.add(i, idList.get(i).get("narrator_name").toString());
+                                    FullUrls.add(i, getString(R.string.youtube_short_url) + IDsForYTsdk.get(i));
+                                    if (idList.get(i).get(getString(R.string.narrator_nam)) != null)
+                                        Narrator.add(i, idList.get(i).get(getString(R.string.narrator_nam)).toString());
                                     else
-                                        Narrator.add(i, "Bot");
+                                        Narrator.add(i, getString(R.string.bot));
                                 }
-                                broadcastIntent.putStringArrayListExtra("titles", Titles);
-                                broadcastIntent.putStringArrayListExtra("descs", Descriptions);
-                                broadcastIntent.putStringArrayListExtra("videoIds", VideoIDs);
-                                broadcastIntent.putStringArrayListExtra("links", FullUrls);
-                                broadcastIntent.putStringArrayListExtra("shareUrl", ShareUrl);
-                                broadcastIntent.putStringArrayListExtra("shortShareUrl", ShortShareUrl);
-                                broadcastIntent.putStringArrayListExtra("idsForSDK", IDsForYTsdk);
-                                broadcastIntent.putStringArrayListExtra("narrator", Narrator);
+                                broadcastIntent.putStringArrayListExtra(getString(R.string.title_intent_extra), Titles);
+                                broadcastIntent.putStringArrayListExtra(getString(R.string.descs_intent_extra), Descriptions);
+                                broadcastIntent.putStringArrayListExtra(getString(R.string.videoID_intent_extra), VideoIDs);
+                                broadcastIntent.putStringArrayListExtra(getString(R.string.links_intent_extra), FullUrls);
+                                broadcastIntent.putStringArrayListExtra(getString(R.string.shareUrl_intent_extra), ShareUrl);
+                                broadcastIntent.putStringArrayListExtra(getString(R.string.shortShareUrl_intent_extra), ShortShareUrl);
+                                broadcastIntent.putStringArrayListExtra(getString(R.string.idForSdk_intent_extra), IDsForYTsdk);
+                                broadcastIntent.putStringArrayListExtra(getString(R.string.narrator_intent_extra), Narrator);
                                 //Toast.makeText(getApplicationContext(), "doInBackground, first run!", Toast.LENGTH_SHORT).show();
-                                ParseObject.unpinAllInBackground("objectsID", idList, new DeleteCallback() {
+                                ParseObject.unpinAllInBackground(getString(R.string.objectsID_parse), idList, new DeleteCallback() {
                                     public void done(ParseException e) {
                                         if (e != null) {
                                             return;
@@ -119,7 +120,7 @@ public class FetchNewsService extends IntentService {
 
                             } else {
                                 e.printStackTrace();
-                                Toast.makeText(getApplicationContext(), "Couldn't fetch data", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), getString(R.string.fetch_error), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -127,14 +128,14 @@ public class FetchNewsService extends IntentService {
                 } catch (Exception fne) {
                     fne.printStackTrace();
                 }
-                getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+                getSharedPreferences(getString(R.string.shared_pref), MODE_PRIVATE)
                         .edit()
-                        .putBoolean("isFirstRun", false)
+                        .putBoolean(getString(R.string.first_run_boolean), false)
                         .apply();
             } else {
                 new AlertDialog.Builder(this)
-                        .setTitle("No Network")
-                        .setMessage("Please connect to a network")
+                        .setTitle(getString(R.string.no_network))
+                        .setMessage(getString(R.string.network_suggestion))
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
@@ -168,39 +169,39 @@ public class FetchNewsService extends IntentService {
                 NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
                 if (networkInfo != null && networkInfo.isConnected()) {
                     query.fromLocalDatastore();                                             //so user doesn't have to wait
-                    query.whereExists("youtube_id");
+                    query.whereExists(getString(R.string.youtube_id));
                     query.setLimit(30);
-                    query.orderByDescending("createdAt");
-                    if (lang.equals("en"))
-                        query.whereEqualTo("language", "en");
-                    else if (lang.equals("hi"))
-                        query.whereEqualTo("language", "hi");
+                    query.orderByDescending(getString(R.string.created_At));
+                    if (lang.equals(getString(R.string.englishLang)))
+                        query.whereEqualTo(getString(R.string.language), getString(R.string.englishLang));
+                    else if (lang.equals(getString(R.string.hindiLang)))
+                        query.whereEqualTo(getString(R.string.language), getString(R.string.hindiLang));
                     query.findInBackground(new FindCallback<ParseObject>() {
                         public void done(final List<ParseObject> idList, ParseException e) {
                             if (e == null) {
                                 for (int i = 0; i < idList.size(); i++) {
-                                    Titles.add(i, idList.get(i).get("video_title").toString());
-                                    Descriptions.add(i, idList.get(i).get("video_script").toString());
-                                    VideoIDs.add(i, "https://www.youtube.com/embed/" + idList.get(i).get("youtube_id").toString() + "?rel=0&controls=0&showinfo=0&autoplay=1&modestbranding=1");
+                                    Titles.add(i, idList.get(i).get(getString(R.string.video_title)).toString());
+                                    Descriptions.add(i, idList.get(i).get(getString(R.string.video_script)).toString());
+                                    VideoIDs.add(i, getString(R.string.youtube_embed_base_url) + idList.get(i).get(getString(R.string.youtube_id)).toString() + getString(R.string.youtube_player_url_extension));
                                     IDsForYTsdk.add(i, YouTubeUrlParser.getVideoId(VideoIDs.get(i)));
-                                    ShareUrl.add(i, idList.get(i).get("share_url").toString());
-                                    ShortShareUrl.add(i, idList.get(i).get("short_share_url").toString());
-                                    FullUrls.add(i, "https://youtu.be/" + IDsForYTsdk.get(i));
-                                    if (idList.get(i).get("narrator_name") != null)
-                                        Narrator.add(i, idList.get(i).get("narrator_name").toString());
+                                    ShareUrl.add(i, idList.get(i).get(getString(R.string.share_url)).toString());
+                                    ShortShareUrl.add(i, idList.get(i).get(getString(R.string.short_share_url)).toString());
+                                    FullUrls.add(i, getString(R.string.youtube_short_url) + IDsForYTsdk.get(i));
+                                    if (idList.get(i).get(getString(R.string.narrator_nam)) != null)
+                                        Narrator.add(i, idList.get(i).get(getString(R.string.narrator_nam)).toString());
                                     else
-                                        Narrator.add(i, "Bot");
+                                        Narrator.add(i, getString(R.string.bot));
                                 }
                                 //Toast.makeText(getApplicationContext(), "inside onPostExecute, block1", Toast.LENGTH_SHORT).show();
-                                broadcastIntent.putStringArrayListExtra("titles", Titles);
-                                broadcastIntent.putStringArrayListExtra("descs", Descriptions);
-                                broadcastIntent.putStringArrayListExtra("videoIds", VideoIDs);
-                                broadcastIntent.putStringArrayListExtra("idsForSDK", IDsForYTsdk);
-                                broadcastIntent.putStringArrayListExtra("links", FullUrls);
-                                broadcastIntent.putStringArrayListExtra("shareUrl", ShareUrl);
-                                broadcastIntent.putStringArrayListExtra("shortShareUrl", ShortShareUrl);
-                                broadcastIntent.putStringArrayListExtra("narrator", Narrator);
-                                ParseObject.unpinAllInBackground("objectsID", idList, new DeleteCallback() {
+                                broadcastIntent.putStringArrayListExtra(getString(R.string.title_intent_extra), Titles);
+                                broadcastIntent.putStringArrayListExtra(getString(R.string.descs_intent_extra), Descriptions);
+                                broadcastIntent.putStringArrayListExtra(getString(R.string.videoID_intent_extra), VideoIDs);
+                                broadcastIntent.putStringArrayListExtra(getString(R.string.idForSdk_intent_extra), IDsForYTsdk);
+                                broadcastIntent.putStringArrayListExtra(getString(R.string.links_intent_extra), FullUrls);
+                                broadcastIntent.putStringArrayListExtra(getString(R.string.shareUrl_intent_extra), ShareUrl);
+                                broadcastIntent.putStringArrayListExtra(getString(R.string.shortShareUrl_intent_extra), ShortShareUrl);
+                                broadcastIntent.putStringArrayListExtra(getString(R.string.narrator_intent_extra), Narrator);
+                                ParseObject.unpinAllInBackground(getString(R.string.objectsID_parse), idList, new DeleteCallback() {
                                     public void done(ParseException e) {
                                         if (e != null) {
                                             return;
@@ -211,48 +212,48 @@ public class FetchNewsService extends IntentService {
                                 sendBroadcast(broadcastIntent);
                             } else {
                                 e.printStackTrace();
-                                Toast.makeText(getApplicationContext(), "Couldn't fetch data", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), R.string.fetch_error, Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
                 } else {
                     query.fromLocalDatastore();
-                    query.orderByDescending("createdAt");
-                    if (lang.equals("en"))
-                        query.whereEqualTo("language", "en");
-                    else if (lang.equals("hi"))
-                        query.whereEqualTo("language", "hi");
+                    query.orderByDescending(getString(R.string.created_At));
+                    if (lang.equals(getString(R.string.englishLang)))
+                        query.whereEqualTo(getString(R.string.language), getString(R.string.englishLang));
+                    else if (lang.equals(getString(R.string.hindiLang)))
+                        query.whereEqualTo(getString(R.string.language), getString(R.string.hindiLang));
                     query.findInBackground(new FindCallback<ParseObject>() {
                         public void done(final List<ParseObject> idList, ParseException e) {
                             if (e == null) {
                                 for (int i = 0; i < idList.size(); i++) {
-                                    Titles.add(i, idList.get(i).get("video_title").toString());
-                                    Descriptions.add(i, idList.get(i).get("video_script").toString());
-                                    VideoIDs.add(i, "https://www.youtube.com/embed/" + idList.get(i).get("youtube_id").toString() + "?rel=0&amp;controls=0&amp;showinfo=0&amp;autoplay=1");
+                                    Titles.add(i, idList.get(i).get(getString(R.string.video_title)).toString());
+                                    Descriptions.add(i, idList.get(i).get(getString(R.string.video_script)).toString());
+                                    VideoIDs.add(i, getString(R.string.youtube_embed_base_url) + idList.get(i).get(getString(R.string.youtube_id)).toString() + getString(R.string.youtube_player_url_extension));
                                     IDsForYTsdk.add(i, YouTubeUrlParser.getVideoId(VideoIDs.get(i)));
-                                    FullUrls.add(i, "https://youtu.be/" + IDsForYTsdk.get(i));
-                                    ShareUrl.add(i, idList.get(i).get("share_url").toString());
-                                    ShortShareUrl.add(i, idList.get(i).get("short_share_url").toString());
-                                    if (idList.get(i).get("narrator_name") != null)
-                                        Narrator.add(i, idList.get(i).get("narrator_name").toString());
+                                    FullUrls.add(i, getString(R.string.youtube_short_url) + IDsForYTsdk.get(i));
+                                    ShareUrl.add(i, idList.get(i).get(getString(R.string.share_url)).toString());
+                                    ShortShareUrl.add(i, idList.get(i).get(getString(R.string.short_share_url)).toString());
+                                    if (idList.get(i).get(getString(R.string.narrator_nam)) != null)
+                                        Narrator.add(i, idList.get(i).get(getString(R.string.narrator_nam)).toString());
                                     else
-                                        Narrator.add(i, "Bot");
+                                        Narrator.add(i, getString(R.string.bot));
                                 }
-                                broadcastIntent.putStringArrayListExtra("titles", Titles);
-                                broadcastIntent.putStringArrayListExtra("descs", Descriptions);
-                                broadcastIntent.putStringArrayListExtra("videoIds", VideoIDs);
-                                broadcastIntent.putStringArrayListExtra("links", FullUrls);
-                                broadcastIntent.putStringArrayListExtra("shortShareUrl", ShortShareUrl);
-                                broadcastIntent.putStringArrayListExtra("idsForSDK", IDsForYTsdk);
-                                broadcastIntent.putStringArrayListExtra("shareUrl", ShareUrl);
-                                broadcastIntent.putStringArrayListExtra("narrator", Narrator);
+                                broadcastIntent.putStringArrayListExtra(getString(R.string.title_intent_extra), Titles);
+                                broadcastIntent.putStringArrayListExtra(getString(R.string.descs_intent_extra), Descriptions);
+                                broadcastIntent.putStringArrayListExtra(getString(R.string.videoID_intent_extra), VideoIDs);
+                                broadcastIntent.putStringArrayListExtra(getString(R.string.links_intent_extra), FullUrls);
+                                broadcastIntent.putStringArrayListExtra(getString(R.string.short_share_url), ShortShareUrl);
+                                broadcastIntent.putStringArrayListExtra(getString(R.string.idForSdk_intent_extra), IDsForYTsdk);
+                                broadcastIntent.putStringArrayListExtra(getString(R.string.shareUrl_intent_extra), ShareUrl);
+                                broadcastIntent.putStringArrayListExtra(getString(R.string.narrator_intent_extra), Narrator);
                                 //Toast.makeText(getApplicationContext(), "inside onPostExecute, block2", Toast.LENGTH_SHORT).show();
 
-                                Toast.makeText(getApplicationContext(), "Fetched saved data", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), R.string.fetched_data_offline, Toast.LENGTH_SHORT).show();
                                 sendBroadcast(broadcastIntent);
                             } else {
                                 e.printStackTrace();
-                                Toast.makeText(getApplicationContext(), "Couldn't fetch saved data", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), R.string.fetch_error_offline, Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

@@ -46,17 +46,17 @@ public class CouchViewActivity extends YouTubeBaseActivity implements YouTubePla
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player,
                                         boolean wasRestored) {
         if (!wasRestored) {
-            if(lang.equals("en"))
-                player.loadPlaylist("PLPr8ShFpxUzvt6pPxJ3TwJPwSeeEvh0L7");
+            if(lang.equals(getResources().getResourceName(R.string.englishLang)))
+                player.loadPlaylist(getString(R.string.playlist1));
             else
-                player.loadPlaylist("PLPr8ShFpxUzvat3m3N7nNFujm8xQl7RNY");
+                player.loadPlaylist(getString(R.string.playlist2));
             player.setFullscreen(true);
         }
     }
 
     @Override
     public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-        Toast.makeText(this, "Failured to Initialize!", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.failed_to_initialize, Toast.LENGTH_LONG).show();
     }
 
 }
