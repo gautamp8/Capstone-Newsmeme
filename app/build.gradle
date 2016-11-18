@@ -15,10 +15,10 @@ android {
 
     signingConfigs {
         release {
-            storeFile file("/home/brainbreaker/AndroidStudioProjects/1NEW/Capstone-Newsmeme/key_new.jks")
-            storePassword "xxxxxx"
-            keyAlias "xxxxxxx"
-            keyPassword "xxxxxx"
+            storeFile file("$rootDir/key_new(everything_sauravtom).jks")
+            storePassword "sauravtom"
+            keyAlias "sauravtom"
+            keyPassword "sauravtom"
         }
     }
     defaultConfig {
