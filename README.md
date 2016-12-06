@@ -13,13 +13,13 @@ Why read a news article when you can consume news in beautifully handcrafted, pr
 
 Cancel your Newspaper subscription today because NewsMeme is all you need.
 
-[![Download on Google Play](http://i.imgur.com/rHhHvZw.png)](play.google.com/store/apps/details?id=in.newsmeme)
+[![Download on Google Play](http://i.imgur.com/rHhHvZw.png)](play.google.com/store/apps/details?id=in.newsmeme) <br>
 Get the latest version on [here](https://drive.google.com/file/d/0ByUvi_2Y6tP7ZjhWZ25NRUo2U1U/view?usp=sharing)
 
 <img src="https://s19.postimg.org/4yyjidbcz/Screenshot_20161123_004749.jpg" width="240" height="400" />
 <img src="https://s19.postimg.org/tcs8c9j2b/Screenshot_20161120_002656.jpg" width="240" height="400" />
 <img src="https://s19.postimg.org/wxo3vhnlv/Screenshot_20161120_002908.jpg" width="240" height="400" />
-<img src="https://s19.postimg.org/lvj0x1tj7/Screenshot_20161120_002730.jpg" width="600" height="400" />
+<img src="https://s19.postimg.org/lvj0x1tj7/Screenshot_20161120_002730.jpg" width="600" height="250" />
 
 ### Contributions
 
